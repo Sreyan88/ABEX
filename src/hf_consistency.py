@@ -23,12 +23,12 @@ transformers.set_seed(42)
 torch.backends.cudnn.deterministic = True
 suffix = ''
 
-train_gold = pd.read_csv(f"/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/100/classification/sst2_train.tsv", sep='\t',header=0)
+train_gold = pd.read_csv(f"./low_res/100/classification/sst2_train.tsv", sep='\t',header=0)
 
 # unique_labels = list(set(train_gold['label']))
 
 print("Training on gold+augs")
-train = pd.read_csv(f"/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/100/classification/sst2_train_processed_filtered_generated_augs.source", sep='\t',header=0)
+train = pd.read_csv(f"./low_res/100/classification/sst2_train_processed_filtered_generated_augs.source", sep='\t',header=0)
 
 train = train.dropna(subset=['text'])
 print(train)
@@ -36,12 +36,12 @@ train["text"] = train["text"].apply(lambda x: x.replace('"""',''))
 
 if args.val == 0:
     print("Using test as val")
-    dev = pd.read_csv(f"/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/100/classification/sst2_dev.tsv", sep='\t',header=0)
+    dev = pd.read_csv(f"./low_res/100/classification/sst2_dev.tsv", sep='\t',header=0)
 else:
     print("Using val")
-    dev = pd.read_csv(f"/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/100/classification/sst2_dev.tsv", sep='\t',header=0)
+    dev = pd.read_csv(f"./low_res/100/classification/sst2_dev.tsv", sep='\t',header=0)
 
-test = pd.read_csv(f"/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/100/classification/sst2_test.tsv", sep='\t',header=0)
+test = pd.read_csv(f"./low_res/100/classification/sst2_test.tsv", sep='\t',header=0)
 
 unique_labels = list(set(train['label']))
 unique_labels.sort()
@@ -60,7 +60,7 @@ else:
 
 print(model_name)
 
-model_ct = AutoModelForSequenceClassification.from_pretrained("/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/100/classification/sst2_100", num_labels=num_labels).cuda()
+model_ct = AutoModelForSequenceClassification.from_pretrained("./low_res/100/classification/sst2_100", num_labels=num_labels).cuda()
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 def tokenize_function(examples):

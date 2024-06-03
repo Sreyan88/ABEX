@@ -27,7 +27,7 @@ def rename_columns(df):
 def train_model():
 
     # gold = rename_columns(pd.read_csv(gold_path, sep='\t', header=0))
-    train = rename_columns(pd.read_csv('/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/200/classification/yahoo_train.tsv', sep='\t'))
+    train = rename_columns(pd.read_csv('./low_res/200/classification/yahoo_train.tsv', sep='\t'))
 
     print(f"Len of train : {len(train)}")
 
@@ -36,8 +36,8 @@ def train_model():
     #     print(f"Len of train after adding gold : {len(train)}")
 
 
-    dev = rename_columns(pd.read_csv('/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/200/classification/yahoo_dev.tsv', sep='\t', header=0))
-    test = rename_columns(pd.read_csv('/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/200/classification/yahoo_test.tsv', sep='\t', header=0))
+    dev = rename_columns(pd.read_csv('./low_res/200/classification/yahoo_dev.tsv', sep='\t', header=0))
+    test = rename_columns(pd.read_csv('./low_res/200/classification/yahoo_test.tsv', sep='\t', header=0))
 
     # train = train.dropna(subset=['text'])
     # train["text"] = train["text"].apply(lambda x: x.replace('"""',''))
@@ -101,7 +101,7 @@ def train_model():
     eval_steps = int(len(train)/(per_device_train_batch_size * num_gpus)) * 5
     training_args = TrainingArguments(
         report_to="none",
-        output_dir=f"/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/200/classification/yahoo_200",
+        output_dir=f"./low_res/200/classification/yahoo_200",
         save_steps = eval_steps,
         save_strategy='steps',
         save_total_limit = 1,
@@ -131,7 +131,7 @@ def train_model():
 
     trainer.train()
 
-    trainer.save_model("/fs/nexus-projects/audio-visual_dereverberation/utkarsh_diff/diff/data/low_res/200/classification/yahoo_200")
+    trainer.save_model("./low_res/200/classification/yahoo_200")
 
     preds = trainer.predict(tokenized_datasets["test"])
     preds = np.argmax(preds[0], axis=-1)

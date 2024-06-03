@@ -48,17 +48,6 @@ with open(args.input, 'r') as f:
 
 a = [i.strip() for i in a]
 
-# for i in range(2):
-#     print(text[i])
-#     print()
-#     print(text[text_similar[i]])
-#     print()
-#     print(a[i])
-#     print()
-#     print(a[text_similar[i]])
-#     print()
-
-# aasd
 
 def replace_multiple_spaces(sentence):
     return re.sub(r'\s+', ' ', sentence)

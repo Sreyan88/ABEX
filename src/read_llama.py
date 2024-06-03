@@ -6,7 +6,7 @@ np.random.seed(42)
 for file in ['llama0-20', 'llama20-40', 'llama40-60','llama60-80', 'llama80-100']:
     with open(f'{file}.txt', 'r') as f:
         a = f.readlines()
-    
+
     temp = ''
     final = []
     for i in tqdm(range(len(a)-2)):
@@ -16,17 +16,17 @@ for file in ['llama0-20', 'llama20-40', 'llama40-60','llama60-80', 'llama80-100'
             temp = ''
             i+=3
             continue
-    
+
         temp += ' ' + a[i].strip()
         temp = temp.strip()
-    
+
     if temp:
         final.append(temp.strip())
 
     # print(len(final))
     # print(final[0])
     # asdasd
-    
+
     csv = []
     count = 0
     for i in final:
@@ -49,9 +49,9 @@ for file in ['llama0-20', 'llama20-40', 'llama40-60','llama60-80', 'llama80-100'
             csv.append([prompt,reply])
         except:
             print(i)
-    
+
     x = pd.DataFrame(csv, columns=['prompt', 'abstract'])
-    
+
     x.to_csv(f'{file}.csv', index=False)
 
 
@@ -74,24 +74,16 @@ divide = int(0.95*len(final))
 train = final[:divide]
 eval = final[divide:]
 
-with open('ProphetNet/GENIE/data/abstract/train.tgt', 'w') as f1:
-    with open('ProphetNet/GENIE/data/abstract/train.src','w') as f2:
+with open('./data/abstract/train.tgt', 'w') as f1:
+    with open('./data/abstract/train.src','w') as f2:
         for i in train:
             f1.write(i[0]+'\n')
             f2.write(i[1]+'\n')
 
-with open('ProphetNet/GENIE/data/abstract/dev.tgt', 'w') as f1:
-    with open('ProphetNet/GENIE/data/abstract/dev.src','w') as f2:
+with open('./data/abstract/dev.tgt', 'w') as f1:
+    with open('./data/abstract/dev.src','w') as f2:
         for i in eval:
             f1.write(i[0]+'\n')
             f2.write(i[1]+'\n')
 
 print('warmup steps: ', int(0.05*len(train)))
-
-
-
-
-
-
-    
-

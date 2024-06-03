@@ -13,10 +13,8 @@ import datasets
 
 from datasets import load_dataset, Dataset
 
-model_name = "meta-llama/Llama-2-70b-chat-hf"
-HfFolder.save_token('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')
-
-tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, access_token="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", padding_side='left')
+model_name = "meta-llama/Llama-2-13b-chat-hf"
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, padding_side='left')
 
 # raw_datasets = load_dataset('c4', 'realnewslike')
 
@@ -145,7 +143,7 @@ class Template:
             query_ids = self._convert_inputs_to_ids(tokenizer, context=self.prompt, query=query, idx=str(turn_idx))
             resp_ids = self._convert_inputs_to_ids(tokenizer, context=[resp])
             encoded_pairs.append((prefix_ids + query_ids))
-            
+
         return encoded_pairs
 
     def _convert_inputs_to_ids(
@@ -251,7 +249,7 @@ def get_template_and_fix_tokenizer(
     name: str,
     tokenizer: "PreTrainedTokenizer"
 ) -> Template:
-    
+
     # if tokenizer.eos_token_id is None:
     #     tokenizer.eos_token = "<|endoftext|>"
     #     # logger.info("Add eos token: {}".format(tokenizer.eos_token))
@@ -270,7 +268,7 @@ def get_template_and_fix_tokenizer(
         replace_additional_special_tokens=False
     )
     return template
-    
+
 template = get_template_and_fix_tokenizer("llama2", tokenizer)
 
 prompt = """I will provide you with a small document. You need to return a short and abstract description of it. Don't mention named entities, and just describe the key message of the document in a few words.
@@ -353,14 +351,14 @@ def get_logits_processor() -> LogitsProcessorList:
 
 
 for data in tqdm(dataloader):
-    
+
     gen_kwargs = dict(
             generation_config=GenerationConfig(**generating_args),
             logits_processor=get_logits_processor()
         )
     generate_output = model.generate(input_ids = data['input_ids'].cuda(), attention_mask = data['attention_mask'].cuda(),**gen_kwargs)
     # print(generate_output)
-    
+
     # response_ids = generate_output[:, prompt_length:]
     response = tokenizer.batch_decode(generate_output, skip_special_tokens=True, clean_up_tokenization_spaces=True)
 
@@ -373,13 +371,13 @@ for data in tqdm(dataloader):
             f.write('\n\n&&&\n\n')
             # print("Prompt: ", i.split('[/INST]')[0])
             # print("Response: ", i.split('[/INST]')[1])
-        
+
     # response_length = 0
     # for i in range(len(response_ids)):
     #     eos_index = (response_ids[i] == tokenizer.eos_token_id).nonzero()
     #     response_length += eos_index[0].item() if len(eos_index) else len(response_ids[i])
-    
-    
+
+
 
 
 # tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, use_auth_token=access_token)
