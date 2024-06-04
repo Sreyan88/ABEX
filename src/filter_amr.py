@@ -19,6 +19,8 @@ def get_arguments():
     parser.add_argument('--output_mixner', type=str, default='', help='output path')
     parser.add_argument('--target', type=str, default='', help='target path')
     parser.add_argument('--method', type=str, default='append', help='append/replace')
+    parser.add_argument('--labels', type=str, default='', help='file with input labels')
+
 
     args = parser.parse_args()
     return args
@@ -47,6 +49,11 @@ with open(args.input, 'r') as f:
     a = f.readlines()
 
 a = [i.strip() for i in a]
+
+with open(args.labels, 'r') as f:
+    labels = f.readlines()
+
+labels = [i.strip() for i in labels]
 
 
 def replace_multiple_spaces(sentence):
@@ -91,12 +98,9 @@ def calculate_depth(sent):
 
     return max_count
 
-def remove_fact(sent, depth):
-    # print(sent)
+def remove_fact(sent, depth, label):
     sent = sent.split(' ')
     indexes = [i for i, x in enumerate(sent) if x[:4] == ':ARG' and sent[i+1]=='(']
-
-    # print(indexes)
 
     new_indexed = []
 
@@ -123,11 +127,18 @@ def remove_fact(sent, depth):
 
     temp = max(int(temp*len(new_indexed)), 1)
 
-    # print(temp)
-    if len(new_indexed):
-        indexes = random.sample(new_indexed, temp)
-    else:
-        indexes = new_indexed
+    text_indexed = [sent[i] for i in new_indexed]
+    embeddings = model.encode(text_indexed, show_progress_bar=True, batch_size=1024)
+    label_embedding = model.encode([label])[0]
+    similarities_indexed = []
+    for embedding in embeddings:
+        simi = 1 - cosine(embedding, label_embedding)
+        similarities_indexed.append(simi)
+
+    items_with_similarities = list(zip(new_indexed, similarities_indexed))
+    sorted_items = sorted(items_with_similarities, key=lambda x: x[1])
+    new_indexed = [item[0] for item in sorted_items]
+    new_indexed = new_indexed[:temp]
 
     for i in indexes:
         sent[i] = 'xxyyzz'
@@ -258,7 +269,9 @@ tags_to_remove = [':mod', ':value', 'numbers', 'fact']
 
 new_sents = []
 
-for sent in tqdm(a):
+for a_ind in tqdm(range(a)):
+    sent = a[a_ind]
+    label = labels[a_ind]
     # print(sent)
     sent = replace_multiple_spaces(sent)
     # print(sent)
@@ -280,7 +293,7 @@ for sent in tqdm(a):
             # print(':mod', sent)
         if tag == 'fact':
             depth = calculate_depth(sent)
-            sent = remove_fact(sent, depth)
+            sent = remove_fact(sent, depth, label)
             # print('fact', sent)
     new_sents.append(replace_multiple_spaces(remove_invalid_parentheses(sent)))
 
