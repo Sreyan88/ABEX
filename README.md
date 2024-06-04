@@ -3,6 +3,8 @@ Code for ACL 2024 paper  -- ABEX: Data Augmentation for Low-Resource NLU via Exp
 
 ![Proposed Methodology](./assets/ABEX-ACL.drawio.jpg)
 
+Note: Synthetic data generation demo script and prompts used have been shared in [prompt](./prompt).
+
 If you wish to train your own model on our synthetic abstract-expand dataset, you can use the dataset given [here](./data/) - train.src, train.tgt, dev.src, dev.tgt.
 Our pretrained ABstract-EXpand model has been uploaded on HuggingFace: [utkarsh4430/ABEX-abstract-expand](https://huggingface.co/utkarsh4430/ABEX-abstract-expand).
 Use the following code to generate expansions from abstract texts.

@@ -16,26 +16,14 @@ from datasets import load_dataset, Dataset
 model_name = "meta-llama/Llama-2-13b-chat-hf"
 tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, padding_side='left')
 
-# raw_datasets = load_dataset('c4', 'realnewslike')
+raw_datasets = load_dataset('c4', 'realnewslike')
 
 # print(raw_datasets)
+# abstract_list = dataset['train']['abstract']
 
-dataset = load_dataset('csv', data_files={'train': 'llama-final.csv'})
-abstract_list = dataset['train']['abstract']
-
-raw_datasets = datasets.DatasetDict({'text': abstract_list, 'timestamp': [0]*len(abstract_list), 'url':len(abstract_list)*[0]})
-raw_datasets = Dataset.from_dict(raw_datasets)
-raw_datasets = datasets.DatasetDict({'train': raw_datasets})
-
-print(raw_datasets)
-
-temp = len(raw_datasets['train'])
-start = 0+1853+1853
-end = int(0.2*temp)
-
-raw_datasets['train'] = raw_datasets['train'].select(range(start, end))
-
-print(len(raw_datasets['train']))
+# raw_datasets = datasets.DatasetDict({'text': abstract_list, 'timestamp': [0]*len(abstract_list), 'url':len(abstract_list)*[0]})
+# raw_datasets = Dataset.from_dict(raw_datasets)
+# raw_datasets = datasets.DatasetDict({'train': raw_datasets})
 
 @dataclass
 class Template:
@@ -249,14 +237,7 @@ def get_template_and_fix_tokenizer(
     name: str,
     tokenizer: "PreTrainedTokenizer"
 ) -> Template:
-
-    # if tokenizer.eos_token_id is None:
-    #     tokenizer.eos_token = "<|endoftext|>"
-    #     # logger.info("Add eos token: {}".format(tokenizer.eos_token))
-
-    # if tokenizer.pad_token_id is None:
     tokenizer.pad_token = tokenizer.eos_token
-        # logger.info("Add pad token: {}".format(tokenizer.pad_token))
 
     if name is None:
         return None
@@ -318,21 +299,13 @@ data_collator = DataCollatorForSeq2Seq(
         label_pad_token_id=tokenizer.pad_token_id
     )
 
-# temp = len(dataset['train'])//2
-# print(len(dataset['train']), len(dataset['validation']))
+
 dataloader = DataLoader(dataset['train'], batch_size=4, collate_fn=data_collator)
-# print(dataloader)
-# ,access_token="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"
 model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto",  use_safetensors = False)
 
 generating_args = {}
 generating_args.update(dict(
-    # do_sample=True,
-    # temperature=0.7,
-    # top_p=0.1,
-    # top_k=50,
     num_return_sequences=1,
-    # repetition_penalty=1.2,
     eos_token_id=[tokenizer.eos_token_id] + tokenizer.additional_special_tokens_ids,
     pad_token_id=tokenizer.pad_token_id,
     max_length = 2000
@@ -357,32 +330,14 @@ for data in tqdm(dataloader):
             logits_processor=get_logits_processor()
         )
     generate_output = model.generate(input_ids = data['input_ids'].cuda(), attention_mask = data['attention_mask'].cuda(),**gen_kwargs)
-    # print(generate_output)
-
-    # response_ids = generate_output[:, prompt_length:]
     response = tokenizer.batch_decode(generate_output, skip_special_tokens=True, clean_up_tokenization_spaces=True)
 
-    with open('llama0-20.txt', 'a') as f:
+    with open('llama.txt', 'a') as f:
         for i in response:
             temp_prompt = i.split('[/INST]')[0]
             temp_res = i.split('[/INST]')[1]
             write_text = f'{temp_prompt}\t,\t{temp_res}'.encode('ascii', 'ignore').decode('ascii')
             f.write(write_text)
             f.write('\n\n&&&\n\n')
-            # print("Prompt: ", i.split('[/INST]')[0])
-            # print("Response: ", i.split('[/INST]')[1])
-
-    # response_length = 0
-    # for i in range(len(response_ids)):
-    #     eos_index = (response_ids[i] == tokenizer.eos_token_id).nonzero()
-    #     response_length += eos_index[0].item() if len(eos_index) else len(response_ids[i])
-
-
-
-
-# tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, use_auth_token=access_token)
-# model_inputs = tokenizer(prompt, return_tensors="pt").to("cuda:0")
-
-# output = model.generate(**model_inputs)
-
-# print(tokenizer.decode(output[0], skip_special_tokens=True))
+            print("Prompt: ", i.split('[/INST]')[0])
+            print("Response: ", i.split('[/INST]')[1])
