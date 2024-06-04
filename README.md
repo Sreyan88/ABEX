@@ -37,12 +37,19 @@ Aug 4:  The WWE Talent Showcase 2019 will feature exciting moments inside the WW
 pip install -r requirements.txt
 ```
 
-2. Setup GitHub repository [AMR-DA: Data Augmentation by Abstract Meaning Representation](https://github.com/zzshou/amr-data-augmentation) for Text to AMR and AMR to Text pipelines
+2. Reformat the input files into the required format using:
+```shell
+python process.py --input <input file> --output <output file> --type <bio|tsv|sim>
+```
 
-3. Take sample data from [test_data](./test_data) and use the Spring AMR Parser to convert it to AMR
+3. Setup GitHub repository [AMR-DA: Data Augmentation by Abstract Meaning Representation](https://github.com/zzshou/amr-data-augmentation) for Text to AMR and AMR to Text pipelines
+
+4. Setup [smatchpp](https://github.com/flipz357/smatchpp) github repository.
+
+5. Take the output from Step 2 and use the Spring AMR Parser to convert it to AMR strings.
 
 4. Run our AMR filtering pipeline:
-```
+```shell
 python src/filter_amr.py
 ```
 
@@ -50,6 +57,9 @@ python src/filter_amr.py
 
 6. Use [autoregressive_generate](./src/autoregressive_generate.py) to expand the edited abstract texts
 
+7. Use the [hf_consistency.py](./src/hf_consistency.py) to check for consistency
+
+8. Use [gold_classifier.py](./src/gold_classifier.py) to finally get the required metrics
 
 Citation:
 
