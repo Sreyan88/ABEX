@@ -13,9 +13,11 @@ import datasets
 
 from datasets import load_dataset, Dataset
 
-model_name = "meta-llama/Llama-2-13b-chat-hf"
-tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, padding_side='left')
 
+# Change lines 18-28 according to the model and input dataset you are using
+model_name = "meta-llama/Llama-2-13b-chat-hf"
+# you will need to add you access token below
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, padding_side='left')
 raw_datasets = load_dataset('c4', 'realnewslike')
 
 # print(raw_datasets)

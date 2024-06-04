@@ -19,4 +19,4 @@ Here is the input document:
 
 [llama.py](./llama.py) is a demo code that can be used to generate new abstract-expansion pairs on a different dataset!
 
-Note: Make sure to update the initial code, which contains the model details and the dataset used. (lines 16-26)
+Note: Make sure to update the initial code, which contains the model details and the dataset used. (lines 18-28)
