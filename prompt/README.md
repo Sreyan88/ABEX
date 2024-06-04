@@ -17,6 +17,6 @@ Output 2: An exhibition curated by an artist, displaying sketches, etchings, and
 Here is the input document:
 ```
 
-[llama.py](./llama.py) is a demo code which can be used to generate new abstract - expansion pairs on a different dataset!
+[llama.py](./llama.py) is a demo code that can be used to generate new abstract-expansion pairs on a different dataset!
 
-Note: Make syre to update the preprocessing code (lines 16-26)
+Note: Make sure to update the initial code, which contains the model details and the dataset used. (lines 16-26)
