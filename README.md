@@ -1,5 +1,5 @@
 # ABEX
-Code for ACL 2024 paper  -- ABEX: Data Augmentation for Low-Resource NLU via Expanding Abstract Descriptions
+Code for ACL 2024 paper -- [ABEX: Data Augmentation for Low-Resource NLU via Expanding Abstract Descriptions](https://arxiv.org/abs/2406.04286)
 
 ![Proposed Methodology](./assets/ABEX-ACL.drawio.jpg)
 
