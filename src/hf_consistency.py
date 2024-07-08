@@ -15,7 +15,6 @@ parser.add_argument('--dataset', '-d', type=str, help='Path to the input file')
 parser.add_argument('--split', '-s', type=str, help='Path to the output file')
 parser.add_argument('--val', '-v', type=int, help='Path to the output file')
 parser.add_argument('--ngpus', '-g', type=int, default=1, help='Path to the output file')
-parser.add_argument('--legal', '-l', type=int, required=True)
 parser.add_argument('--original', '-o', type=int, required=True)
 args = parser.parse_args()
 

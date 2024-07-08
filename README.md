@@ -30,6 +30,8 @@ Aug 3:  Find out if you can meet WWE stars, including the Rock and Shake, at a b
 Aug 4:  The WWE Talent Showcase 2019 will feature exciting moments inside the WWE Studios, including the first one in over a decade, and features a chance to hug current and former stars and receive a check from a corporate sponsor.
 ```
 
+The work adopts [SPRING](https://github.com/SapienzaNLP/spring) as AMR parser and [plms-graph2text](https://github.com/UKPLab/plms-graph2text) as AMR generator.
+
 ### Steps to generate data augmentations from ABEX
 
 1. Install dependencies using:
@@ -46,20 +48,34 @@ python process.py --input <input file> --output <output file> --type <bio|tsv|si
 
 4. Setup [smatchpp](https://github.com/flipz357/smatchpp) github repository.
 
-5. Take the output from Step 2 and use the Spring AMR Parser to convert it to AMR strings.
+5. Text to AMR - Use output from Step 2 to get AMR graph
+```shell
+cd amr-parser-spring
+bash predict_amr.sh <plain_text_file_path>(../data/wiki_data/wiki.txt)
+```
+Preprocess amr graph, convert to source and target string
+```shell
+cd data-utils/preprocess
+bash prepare_data.sh <amr_file_path>(../../data/wiki_data/wiki.amr)
+```
 
-4. Run our AMR filtering pipeline:
+6. Run our AMR filtering pipeline:
 ```shell
 python src/filter_amr.py
 ```
 
-5. Convert the filtered AMRs back to text using plms-graph2text AMR generator
+7. Convert the filtered AMRs back to text using plms-graph2text AMR generator
+```shell
+cd plms-graph2text
+bash decode_AMR.sh <model-path> <checkpoint> <gpu_id> <source file> <output-name>
+(bash decode_AMR.sh /path/to/t5-base amr-t5-base.ckpt 0 ../data/wiki-data/wiki.source wiki-perd-t5-base.txt)
+```
 
-6. Use [autoregressive_generate](./src/autoregressive_generate.py) to expand the edited abstract texts
+8. Use [autoregressive_generate](./src/autoregressive_generate.py) to expand the edited abstract texts
 
-7. Use the [hf_consistency.py](./src/hf_consistency.py) to check for consistency
+9. Use the [hf_consistency.py](./src/hf_consistency.py) to check for consistency
 
-8. Use [gold_classifier.py](./src/gold_classifier.py) to finally get the required metrics
+10. Use [gold_classifier.py](./src/gold_classifier.py) to finally get the required metrics
 
 Citation:
 

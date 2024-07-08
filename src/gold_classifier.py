@@ -12,7 +12,6 @@ import argparse
 
 parser = argparse.ArgumentParser(description='A simple script with command-line arguments.')
 parser.add_argument('--ngpus', '-g', type=int, default=4, help='Path to the output file')
-parser.add_argument('--legal', '-l', type=int, required=True)
 args = parser.parse_args()
 
 transformers.set_seed(42)
